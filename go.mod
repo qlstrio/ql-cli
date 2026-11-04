@@ -1,4 +1,4 @@
-module ql-cli
+module github.com/qlstrio/ql-cli
 
 go 1.26.5
 

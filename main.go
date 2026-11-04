@@ -1,7 +1,7 @@
 package main
 
 import (
-	"ql-cli/cmd"
+	"github.com/qlstrio/ql-cli/cmd"
 )
 
 func main() {
