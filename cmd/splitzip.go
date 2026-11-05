@@ -26,10 +26,10 @@ var (
 )
 
 func init() {
-	splitzipCmd.Flags().StringVar(&zipfolder, "s", "", "源文件目录")
-	splitzipCmd.Flags().StringVar(&outputfolder, "d", ".", "输出目录")
-	splitzipCmd.Flags().StringVar(&zprefix, "p", "split_", "zip文件前缀")
-	splitzipCmd.Flags().Int64Var(&maxSize, "b", 2, "最大文件大小，单位MB，若单文件大小超过最大文件大小，单独压缩")
+	splitzipCmd.Flags().StringVarP(&zipfolder, "source", "s", "", "源文件目录")
+	splitzipCmd.Flags().StringVarP(&outputfolder, "dir", "d", ".", "输出目录")
+	splitzipCmd.Flags().StringVarP(&zprefix, "prefix", "p", "split_", "zip文件前缀")
+	splitzipCmd.Flags().Int64VarP(&maxSize, "max", "b", 2, "最大文件大小，单位MB，若单文件大小超过最大文件大小，单独压缩")
 	rootCmd.AddCommand(splitzipCmd)
 }
 

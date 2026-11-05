@@ -4,7 +4,10 @@
 
 ## 功能特性
 
-- **rename** — 批量修改文件名，支持查找替换、正则匹配、添加前后缀、大小写转换、清理特殊字符、扩展名过滤等
+- **copy** — 批量复制文件到指定目录，支持筛选指定文件类型、递归，保留文件结构
+- **move** — 批量移动文件到指定目录,支持筛选指定文件类型、递归，保留文件结构
+- **rename** — 批量修改文件名,支持查找替换、正则匹配、添加前后缀、大小写转换、清理特殊字符、扩展名过滤等
+- **splitzip** — 将指定目录下的文件分割压缩为多个zip文件
 
 ## 安装
 
@@ -13,30 +16,26 @@
 ```bash
 git clone https://github.com/qlstrio/ql-cli.git
 cd ql-cli
-go build -o ql .
+go build -o ql-cli
 ```
 
-### 直接运行
+### go install 安装
 
 ```bash
-go run main.go rename --help
+go install github.com/qlstrio/ql-cli@latest
 ```
 
 ## 命令列表
 
-### `rename` — 批量重命名
-
-遍历指定目录，批量修改文件名。支持查找替换、正则匹配、添加前后缀、大小写转换等操作。
-
-
+### `copy` — 批量复制文件
+遍历指定目录，批量复制文件到目标目录。支持筛选指定文件类型、递归，保留文件结构。
 
 #### 基本用法
-
 ```bash
-ql rename -d ./files --from "IMG_" --to "Photo_"
+ql copy -d ./files --filter ".jpg" --dst "./backup"
 ```
-### `move` — 批量移动文件
 
+### `move` — 批量移动文件
 遍历指定目录，批量移动文件指定类型文件到目标目录。如果目标目录不存在，会自动创建。
 
 #### 基本用法
@@ -44,30 +43,20 @@ ql rename -d ./files --from "IMG_" --to "Photo_"
 ql move -d ./files --filter ".jpg" --dst "./backup"
 ```
 
-### `completion` — 生成 Shell 补全脚本
+### `rename` — 批量重命名
+遍历指定目录，批量修改文件名。支持查找替换、正则匹配、添加前后缀、大小写转换等操作。
 
-为不同 Shell 生成命令补全脚本，安装后可通过 Tab 键自动补全子命令和参数。
+#### 基本用法
+```bash
+ql rename -d ./files --from "IMG_" --to "Photo_"
+```
+### `splitzip` — 压缩文件
+遍历指定目录，将所有文件分割压缩为多个zip文件。
 
 #### 基本用法
 
 ```bash
-ql completion [bash|zsh|fish|powershell]
-```
-
-#### 安装补全脚本
-
-```bash
-# Bash（Linux/macOS 默认）
-ql completion bash > /etc/bash_completion.d/ql-cli
-
-# Zsh
-ql completion zsh > "${fpath[1]}/_ql"
-
-# Fish
-ql completion fish > ~/.config/fish/completions/ql-cli.fish
-
-# PowerShell
-ql completion powershell > ql.ps1
+ql splitzip -s ./files -d ./backup
 ```
 
 ## 技术栈
