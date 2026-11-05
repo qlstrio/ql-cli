@@ -16,8 +16,22 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute() {
+	showBanner()
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+func showBanner() {
+	banner := `
+ ┌───────────────┐
+ │     /\_/\     │
+ │    ( o.o )    │
+ │     > ^ <     │
+ │               │
+ │   >  ql-cli   │
+ └───────────────┘
+`
+	fmt.Println(color.GreenString(banner))
 }
