@@ -48,15 +48,6 @@ func init() {
 	renameCmd.Flags().BoolVar(&removeExt, "remove-ext", false, "移除扩展名")
 
 	rootCmd.AddCommand(renameCmd)
-
-	//_ = renameCmd.RegisterFlagCompletionFunc("dir", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	//	return nil, cobra.ShellCompDirectiveFilterDirs
-	//})
-	//
-	//_ = renameCmd.RegisterFlagCompletionFunc("filter", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	//	extensions := []string{".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".tiff", ".svg", ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".txt", ".md", ".csv", ".json", ".xml", ".html", ".css", ".js", ".ts", ".go", ".py", ".java", ".c", ".cpp", ".h", ".rs", ".rb", ".php", ".zip", ".tar", ".gz", ".rar", ".7z", ".mp3", ".mp4", ".mov", ".avi", ".mkv"}
-	//	return extensions, cobra.ShellCompDirectiveNoFileComp
-	//})
 }
 
 // 白名单正则：只保留英文字母、数字、下划线、连字符和中文汉字以及括号
