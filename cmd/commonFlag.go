@@ -17,7 +17,7 @@ func addCommonDirFlags(cmd *cobra.Command) {
 	cmd.Flags().StringVarP(&dir, "dir", "d", ".", "目标/要处理的目录路径")
 	cmd.Flags().BoolVarP(&recursive, "recursive", "r", false, "是否递归处理子目录")
 	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "预览模式(不会实际修改)")
-	cmd.Flags().StringSliceVarP(&filter, "filter", "f", nil, "筛选指定文件类型,支持多种-f=png -f=txt，也支持逗号--f=png,txt")
+	cmd.Flags().StringSliceVarP(&filter, "filter", "f", nil, "筛选指定文件类型,支持多种-f=png -f=txt，也支持逗号 -f=png,txt")
 }
 
 func addOutFlag(cmd *cobra.Command) {

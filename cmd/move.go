@@ -39,7 +39,7 @@ func runMove(cmd *cobra.Command, args []string) error {
 	}
 
 	if absDir == outDir {
-		return fmt.Errorf("目标目录不能与源目录相同")
+		return fmt.Errorf(color.RedString("目标目录不能与源目录相同"))
 	}
 
 	if dryRun {
