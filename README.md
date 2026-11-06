@@ -32,7 +32,7 @@ go install github.com/qlstrio/ql-cli@latest
 
 #### 基本用法
 ```bash
-ql copy -d ./files --filter ".jpg" --dst "./backup"
+ql-cli copy -d ./files --filter ".jpg" --dst "./backup"
 ```
 
 ### `move` — 批量移动文件
@@ -40,7 +40,7 @@ ql copy -d ./files --filter ".jpg" --dst "./backup"
 
 #### 基本用法
 ```bash
-ql move -d ./files --filter ".jpg" --dst "./backup"
+ql-cli move -d ./files --filter ".jpg" --dst "./backup"
 ```
 
 ### `rename` — 批量重命名
@@ -48,7 +48,7 @@ ql move -d ./files --filter ".jpg" --dst "./backup"
 
 #### 基本用法
 ```bash
-ql rename -d ./files --from "IMG_" --to "Photo_"
+ql-cli rename -d ./files --from "IMG_" --to "Photo_"
 ```
 ### `splitzip` — 压缩文件
 遍历指定目录，将所有文件分割压缩为多个zip文件。
@@ -56,7 +56,20 @@ ql rename -d ./files --from "IMG_" --to "Photo_"
 #### 基本用法
 
 ```bash
-ql splitzip -s ./files -d ./backup
+ql-cli splitzip -s ./files -d ./backup
+```
+### `uuid` — UUID 工具
+uuid 相关操作
+
+#### 基本用法
+
+```bash
+# 生成 UUID
+ql-cli uuid gen
+# 压缩 UUID，支持压缩到23位或22位
+ql-cli uuid com <uuid> [-s]
+# 解压 UUID
+ql-cli uuid dec <uuid>
 ```
 
 ## 技术栈
