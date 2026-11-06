@@ -12,7 +12,14 @@ import (
 var CompressCmd = &cobra.Command{
 	Use:   "com",
 	Short: "压缩 UUID",
+	Long:  "压缩 UUID 字符串，压缩后长度为 23 或 22 的 UUID 字符串，默认23位",
 	RunE:  runCompress,
+}
+
+var short bool
+
+func init() {
+	CompressCmd.Flags().BoolVarP(&short, "short", "s", false, "压缩长度为22")
 }
 
 func runCompress(cmd *cobra.Command, args []string) error {
@@ -24,6 +31,11 @@ func runCompress(cmd *cobra.Command, args []string) error {
 	if !isUUID(args[0]) {
 		fmt.Println(color.RedString("请输入正确的 UUID 字符串"))
 		return nil
+	}
+	if short {
+		fmt.Println(color.CyanString("压缩后长度为 22"))
+	} else {
+		fmt.Println(color.CyanString("压缩后长度为 23"))
 	}
 	compress(args[0])
 	return nil
@@ -53,10 +65,19 @@ func isUUID(u string) bool {
 func compress(str string) string {
 	// 去掉 UUID 中的连字符。
 	str = strings.ReplaceAll(str, "-", "")
-	// 保留前 5 个十六进制字符，不参与压缩。
-	qianwu := str[0:5]
 	length := len(str)
-	i := 5
+	head := ""
+	i := 0
+	if !short {
+		// 长度 23：保留前 5 个原始十六进制字符，压缩后面 18 个字符。
+		head = str[0:5]
+		i = 5
+	} else {
+		// 长度 22：保留前 2 个原始十六进制字符，压缩后面 20 个字符。
+		head = str[0:2]
+		i = 2
+	}
+	// 保留前 5 个十六进制字符，不参与压缩。
 
 	var zi strings.Builder
 	// 从第 6 个字符开始，每 3 个十六进制字符压缩成 2 个 Base64 字符。
@@ -80,7 +101,7 @@ func compress(str string) string {
 		i += 3
 	}
 
-	result := qianwu + zi.String()
+	result := head + zi.String()
 	fmt.Println("压缩后：" + color.GreenString(result))
 	return result
 }

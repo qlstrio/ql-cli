@@ -11,6 +11,7 @@ import (
 var DecompressCmd = &cobra.Command{
 	Use:   "dec",
 	Short: "解压 UUID",
+	Long:  "解压 UUID 字符串，支持解压长度为 23 或 22 的 UUID 字符串",
 	RunE:  runDecompress,
 }
 

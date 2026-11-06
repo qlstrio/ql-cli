@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"sync"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -15,8 +16,11 @@ var rootCmd = &cobra.Command{
 	Version: "0.0.1",
 }
 
+var once sync.Once
+
 func Execute() {
-	showBanner()
+	once.Do(showBanner)
+
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
