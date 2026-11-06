@@ -9,13 +9,14 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
 var splitzipCmd = &cobra.Command{
 	Use:   "splitzip",
-	Short: "将文件分割压缩为多个zip文件",
-	Long:  "将文件分割压缩为多个zip文件，保留文件结构。",
+	Short: color.CyanString("将文件分割压缩为多个zip文件"),
+	Long:  color.CyanString("将文件分割压缩为多个zip文件，保留文件结构。"),
 	RunE:  runSplitZip,
 }
 var (

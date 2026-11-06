@@ -6,14 +6,15 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/fatih/color"
 	"github.com/qlstrio/ql-cli/util"
 	"github.com/spf13/cobra"
 )
 
 var moveCmd = &cobra.Command{
 	Use:   "move",
-	Short: "移动文件到指定目录",
-	Long:  "移动文件到指定目录，支持筛选指定文件类型、递归，保留文件结构。",
+	Short: color.CyanString("移动文件到指定目录"),
+	Long:  color.CyanString("移动文件到指定目录，支持筛选指定文件类型、递归，保留文件结构。"),
 	RunE:  runMove,
 }
 

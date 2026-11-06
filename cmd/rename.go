@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -24,14 +25,14 @@ var (
 
 var renameCmd = &cobra.Command{
 	Use:   "rename",
-	Short: "批量修改文件名",
-	Long: `遍历指定目录,批量修改文件名。支持查找替换、正则匹配、添加前后缀、大小写转换等操作。
+	Short: color.CyanString("批量修改文件名"),
+	Long: color.CyanString(`遍历指定目录,批量修改文件名。支持查找替换、正则匹配、添加前后缀、大小写转换等操作。
 
 示例:
   ql-rename-cli rename -d ./files --from "IMG_" --to "Photo_"
   ql-rename-cli rename -d ./files --regex --from "IMG_(\d+)" --to "Photo_$1"
   ql-rename-cli rename -d ./files --prefix "2024_" --dry-run
-  ql-rename-cli rename -d ./files --to-lower --filter ".JPG"`,
+  ql-rename-cli rename -d ./files --to-lower --filter ".JPG"`),
 	RunE: runRename,
 }
 

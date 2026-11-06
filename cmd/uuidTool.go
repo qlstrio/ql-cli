@@ -1,16 +1,15 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/fatih/color"
 	"github.com/qlstrio/ql-cli/cmd/uuidTool"
 	"github.com/spf13/cobra"
 )
 
 var uuidToolCmd = &cobra.Command{
 	Use:   "uuid",
-	Short: "UUID 工具",
-	Long:  "UUID 工具",
+	Short: color.CyanString("UUID 工具"),
+	Long:  color.CyanString("UUID 工具"),
 	RunE:  runUUIDTool,
 }
 
@@ -20,6 +19,9 @@ func init() {
 }
 
 func runUUIDTool(cmd *cobra.Command, args []string) error {
-	fmt.Println("UUID 工具")
+	err := cmd.Help()
+	if err != nil {
+		return err
+	}
 	return nil
 }
