@@ -50,13 +50,17 @@ ql-cli move -d ./files --filter ".jpg" --dst "./backup"
 ```bash
 ql-cli rename -d ./files --from "IMG_" --to "Photo_"
 ```
-### `splitzip` — 压缩文件
+### `splitzip` — 压缩文件 `unsplitzip` — 还原文件
 遍历指定目录，将所有文件分割压缩为多个zip文件。
 
 #### 基本用法
 
 ```bash
-ql-cli splitzip -s ./files -d ./backup
+# 压缩
+ql-cli splitzip -s /path/to/src -d /path/to/zips -p split_ -b 10
+
+# 还原（参数对应一致）
+ql-cli unsplitzip -s /path/to/zips -d /path/to/restore -p split_
 ```
 ### `uuid` — UUID 工具
 uuid 相关操作

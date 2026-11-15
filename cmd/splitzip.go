@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -169,4 +170,108 @@ func writeZip(filePaths []string, zipName string, outputPath string, sourceFileP
 		srcFile.Close()
 	}
 	return nil
+}
+
+var unsplitzipCmd = &cobra.Command{
+	Use:   "unsplitzip",
+	Short: color.CyanString("将多个分割的zip文件还原为原始目录"),
+	Long:  color.CyanString("将 splitzip 生成的多个 zip 文件解压到同一目录，自动合并还原文件结构。"),
+	RunE:  runUnsplitZip,
+}
+
+var (
+	unzipSource string
+	unzipOutput string
+	unzipPrefix string
+)
+
+func init() {
+	unsplitzipCmd.Flags().StringVarP(&unzipSource, "source", "s", "", "包含分割zip文件的目录")
+	unsplitzipCmd.Flags().StringVarP(&unzipOutput, "dir", "d", ".", "还原输出目录")
+	unsplitzipCmd.Flags().StringVarP(&unzipPrefix, "prefix", "p", "split_", "zip文件前缀(与splitzip一致)")
+	rootCmd.AddCommand(unsplitzipCmd)
+}
+
+func runUnsplitZip(cmd *cobra.Command, args []string) error {
+	var err error
+	unzipSource, err = getAbsDirPath(unzipSource)
+	if err != nil {
+		return err
+	}
+	unzipOutput, err = filepath.Abs(unzipOutput)
+	if err != nil {
+		return fmt.Errorf("获取输出目录绝对路径失败: %w", err)
+	}
+
+	pattern := filepath.Join(unzipSource, unzipPrefix+"*.zip")
+	zipFiles, err := filepath.Glob(pattern)
+	if err != nil {
+		return fmt.Errorf("查找zip文件失败: %w", err)
+	}
+	if len(zipFiles) == 0 {
+		return fmt.Errorf("在 %s 下未找到匹配 %s*.zip 的文件", unzipSource, unzipPrefix)
+	}
+
+	totalFiles := 0
+	for _, zipPath := range zipFiles {
+		n, err := extractZip(zipPath, unzipOutput)
+		if err != nil {
+			fmt.Printf("解压 %s 失败: %v\n", filepath.Base(zipPath), err)
+			continue
+		}
+		totalFiles += n
+		fmt.Printf("✓ %s -> %d 个文件\n", filepath.Base(zipPath), n)
+	}
+	fmt.Printf("完成: %d 个zip, 共还原 %d 个文件到 %s\n", len(zipFiles), totalFiles, unzipOutput)
+	return nil
+}
+
+func extractZip(zipPath string, destDir string) (int, error) {
+	r, err := zip.OpenReader(zipPath)
+	if err != nil {
+		return 0, fmt.Errorf("打开zip失败: %w", err)
+	}
+	defer r.Close()
+
+	count := 0
+	for _, f := range r.File {
+		cleanName := filepath.Clean(f.Name)
+		if strings.HasPrefix(cleanName, "..") {
+			return 0, fmt.Errorf("zip内包含非法路径: %s", f.Name)
+		}
+
+		fullPath := filepath.Join(destDir, cleanName)
+
+		if f.FileInfo().IsDir() {
+			if err := os.MkdirAll(fullPath, 0755); err != nil {
+				return 0, fmt.Errorf("创建目录 %s 失败: %w", fullPath, err)
+			}
+			continue
+		}
+
+		if err := os.MkdirAll(filepath.Dir(fullPath), 0755); err != nil {
+			return 0, fmt.Errorf("创建父目录 %s 失败: %w", filepath.Dir(fullPath), err)
+		}
+
+		outFile, err := os.OpenFile(fullPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
+		if err != nil {
+			return 0, fmt.Errorf("创建文件 %s 失败: %w", fullPath, err)
+		}
+
+		rc, err := f.Open()
+		if err != nil {
+			outFile.Close()
+			return 0, fmt.Errorf("读取zip条目 %s 失败: %w", f.Name, err)
+		}
+
+		if _, err := io.Copy(outFile, rc); err != nil {
+			rc.Close()
+			outFile.Close()
+			return 0, fmt.Errorf("写入文件 %s 失败: %w", fullPath, err)
+		}
+		rc.Close()
+		outFile.Close()
+		count++
+	}
+	return count, nil
 }
