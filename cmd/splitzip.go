@@ -1,13 +1,12 @@
 package cmd
 
 import (
-	"bytes"
+	"archive/zip"
 	"fmt"
+	"io"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"sort"
-	"strings"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -71,7 +70,9 @@ func DoZip(sourceFilePath string, outputPath string, maxSize int64, prefix strin
 	currFileSize := 0
 	for index, stringInfo := range ret {
 		currFileSize += len(stringInfo)
-		buildCmdZip(stringInfo, fmt.Sprintf("%v%v.zip", prefix, index), outputPath, sourceFilePath)
+		if err := writeZip(stringInfo, fmt.Sprintf("%v%v.zip", prefix, index), outputPath, sourceFilePath); err != nil {
+			fmt.Println(err)
+		}
 	}
 	fmt.Println(totoalFileSize, currFileSize)
 }
@@ -121,31 +122,51 @@ func groupBySize(files []FileSize, maxSize int64) ([][]string, error) {
 	return ret, nil
 }
 
-func buildCmdZip(oneZipInfo []string, zipName string, outputPath string, sourceFilePath string) {
-	cmdStr := fmt.Sprintf("cd %v && zip -r %v/%v %v", sourceFilePath, outputPath, zipName, buildFileArr(oneZipInfo, sourceFilePath))
-	_, err := exec_shell(cmdStr)
+func writeZip(filePaths []string, zipName string, outputPath string, sourceFilePath string) error {
+	zipPath := filepath.Join(outputPath, zipName)
+	f, err := os.Create(zipPath)
 	if err != nil {
-		fmt.Println(err)
+		return fmt.Errorf("failed to create zip file %s: %w", zipPath, err)
 	}
-}
+	defer f.Close()
 
-func buildFileArr(oneZipInfo []string, sourceFilePath string) string {
-	cmdStr := ""
-	for _, strInfo := range oneZipInfo {
-		cmdStr += strings.Replace(strInfo, sourceFilePath+"/", "", -1) + " "
+	zw := zip.NewWriter(f)
+	defer zw.Close()
+
+	for _, filePath := range filePaths {
+		relPath, err := filepath.Rel(sourceFilePath, filePath)
+		if err != nil {
+			return fmt.Errorf("failed to get relative path for %s: %w", filePath, err)
+		}
+		relPath = filepath.ToSlash(relPath)
+
+		info, err := os.Stat(filePath)
+		if err != nil {
+			return fmt.Errorf("failed to stat file %s: %w", filePath, err)
+		}
+
+		header, err := zip.FileInfoHeader(info)
+		if err != nil {
+			return fmt.Errorf("failed to create zip header for %s: %w", filePath, err)
+		}
+		header.Name = relPath
+		header.Method = zip.Deflate
+
+		w, err := zw.CreateHeader(header)
+		if err != nil {
+			return fmt.Errorf("failed to create zip entry for %s: %w", filePath, err)
+		}
+
+		srcFile, err := os.Open(filePath)
+		if err != nil {
+			return fmt.Errorf("failed to open file %s: %w", filePath, err)
+		}
+
+		if _, err := io.Copy(w, srcFile); err != nil {
+			srcFile.Close()
+			return fmt.Errorf("failed to write file %s to zip: %w", filePath, err)
+		}
+		srcFile.Close()
 	}
-	return cmdStr
-}
-
-// 阻塞式的执行外部shell命令的函数,等待执行完毕并返回标准输出
-func exec_shell(s string) (string, error) {
-	// 函数返回一个*Cmd，用于使用给出的参数执行name指定的程序
-	cmd := exec.Command("/bin/bash", "-c", s)
-	// 读取io.Writer类型的cmd.Stdout，再通过bytes.Buffer(缓冲byte类型的缓冲器)将byte类型转化为string类型(out.String():这是bytes类型提供的接口)
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	// Run执行c包含的命令，并阻塞直到完成。  这里stdout被取出，cmd.Wait()无法正确获取stdin,stdout,stderr，则阻塞在那了
-	err := cmd.Run()
-
-	return out.String(), err
+	return nil
 }
