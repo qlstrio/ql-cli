@@ -54,7 +54,7 @@ func runIconGen(cmd *cobra.Command, args []string) error {
 
 	var platforms []string
 	if iconFormats != "all" {
-		for _, r := range strings.Split(iconFormats, ",") {
+		for r := range strings.SplitSeq(iconFormats, ",") {
 			r = strings.TrimSpace(strings.ToLower(r))
 			if r != "" {
 				platforms = append(platforms, r)

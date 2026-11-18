@@ -12,7 +12,7 @@ var rootCmd = &cobra.Command{
 	Use:     "ql-cli",
 	Short:   color.CyanString("CLI工具集"),
 	Long:    color.CyanString("一个ql-cli工具集合"),
-	Version: color.CyanString("0.0.3"),
+	Version: color.CyanString("0.0.4"),
 	// SilenceErrors: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if len(args) < 1 {

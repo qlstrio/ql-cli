@@ -35,19 +35,19 @@ var cryptoCmd = &cobra.Command{
 
 var cryptoEncryptCmd = &cobra.Command{
 	Use:   "encrypt",
-	Short: "加密文件/目录",
+	Short: color.CyanString("加密文件/目录"),
 	RunE:  runCryptoEncrypt,
 }
 
 var cryptoDecryptCmd = &cobra.Command{
 	Use:   "decrypt",
-	Short: "解密文件/目录",
+	Short: color.CyanString("解密文件/目录"),
 	RunE:  runCryptoDecrypt,
 }
 
 var cryptoKeygenCmd = &cobra.Command{
 	Use:   "keygen",
-	Short: "生成 age 密钥对",
+	Short: color.CyanString("生成密钥对"),
 	RunE:  runCryptoKeygen,
 }
 

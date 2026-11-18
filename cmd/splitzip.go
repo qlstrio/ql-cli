@@ -72,16 +72,16 @@ func runUnsplitZip(cmd *cobra.Command, args []string) error {
 	}
 	unzipOutput, err = filepath.Abs(unzipOutput)
 	if err != nil {
-		return fmt.Errorf("获取输出目录绝对路径失败: %w", err)
+		return fmt.Errorf(color.RedString("获取输出目录绝对路径失败: %w"), err)
 	}
 
 	pattern := filepath.Join(unzipSource, unzipPrefix+"*.zip")
 	zipFiles, err := filepath.Glob(pattern)
 	if err != nil {
-		return fmt.Errorf("查找zip文件失败: %w", err)
+		return fmt.Errorf(color.RedString("查找zip文件失败: %w"), err)
 	}
 	if len(zipFiles) == 0 {
-		return fmt.Errorf("在 %s 下未找到匹配 %s*.zip 的文件", unzipSource, unzipPrefix)
+		return fmt.Errorf(color.RedString("在 %s 下未找到匹配 %s*.zip 的文件"), unzipSource, unzipPrefix)
 	}
 
 	return splitZip.DoExtract(zipFiles, unzipOutput)
