@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"image"
 	"strings"
+
+	"github.com/fatih/color"
 )
 
 type Options struct {
@@ -23,7 +25,7 @@ func Generate(opts Options) error {
 		return fmt.Errorf("源图标必须是正方形, 当前 %dx%d", b.Dx(), b.Dy())
 	}
 	if b.Dx() < 1024 {
-		fmt.Printf("⚠ 源图 %dx%d 小于建议的 1024x1024, 部分平台高清图标可能模糊\n", b.Dx(), b.Dy())
+		fmt.Printf(color.YellowString("⚠ 源图 %dx%d 小于建议的 1024x1024, 部分平台高清图标可能模糊\n"), b.Dx(), b.Dy())
 	}
 
 	platforms := opts.Platforms

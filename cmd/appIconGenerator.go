@@ -42,7 +42,7 @@ func init() {
 
 func runIconGen(cmd *cobra.Command, args []string) error {
 	if iconSource == "" {
-		return fmt.Errorf(color.RedString("请通过 -s 指定源图片路径"))
+		return fmt.Errorf("%s", color.RedString("请通过 -s 指定源图片路径"))
 	}
 	if _, err := os.Stat(iconSource); err != nil {
 		return fmt.Errorf(color.RedString("源图标不存在: %w"), err)
