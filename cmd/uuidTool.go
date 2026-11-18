@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"github.com/fatih/color"
-	"github.com/qlstrio/ql-cli/cmd/uuidTool"
+	"github.com/qlstrio/ql-cli/internal/uuidtool"
 	"github.com/spf13/cobra"
 )
 

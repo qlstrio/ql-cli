@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 
 	"github.com/fatih/color"
-	"github.com/qlstrio/ql-cli/cmd/splitZip"
+	"github.com/qlstrio/ql-cli/internal/splitzip"
 	"github.com/spf13/cobra"
 )
 

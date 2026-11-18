@@ -8,7 +8,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 
-	"github.com/qlstrio/ql-cli/cmd/appIcon"
+	"github.com/qlstrio/ql-cli/internal/appicon"
 )
 
 var iconGenCmd = &cobra.Command{
