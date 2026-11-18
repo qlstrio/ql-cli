@@ -13,6 +13,7 @@ var rootCmd = &cobra.Command{
 	Short:   color.CyanString("CLI工具集"),
 	Long:    color.CyanString("一个ql-cli工具集合"),
 	Version: color.CyanString("0.0.3"),
+	// SilenceErrors: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if len(args) < 1 {
 			showBanner()
@@ -27,7 +28,7 @@ var rootCmd = &cobra.Command{
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		// fmt.Println(err) //cobra会自动打印错误信息
 		os.Exit(1)
 	}
 }
